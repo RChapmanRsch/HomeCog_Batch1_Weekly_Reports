@@ -1,0 +1,120 @@
+---
+title: "HomeCog Batch1 Weekly Reports"
+output: html_notebook
+---
+Coding for weekly review of HomeCog Batch 1 data collection. The purpose of this document is to structure what will be reviewed on a weekly basis. 
+
+# Load the data (right now simulated). 
+
+```{r DataSim}
+PROni=35
+PerfOni=35
+samplesize=50
+
+PROItems=matrix(sample(1:5,PROni*samplesize,replace=TRUE),nrow=samplesize,ncol=PROni, dimnames = list(c(),paste0("PRO",1:PROni)))
+PerfoItems=matrix(sample(c(0,1),PerfOni*samplesize,replace=TRUE),nrow=samplesize,ncol=PerfOni, dimnames=list(c(),paste0("PerfO",1:PerfOni)))
+
+ClinicalCharacteristics=data.frame(
+  #ADRD diagnosis (sim 1:5)
+  "ADRD"=sample(1:5,samplesize,replace=TRUE),
+  #FAMCAT AC
+  "FAMCAT_AC"=sample(seq(-3,3,0.1),samplesize,replace=TRUE),
+  "FAMCAT_Mob"=sample(seq(-3,3,0.1),samplesize,replace=TRUE),
+  "FAMCAT_DA"=sample(seq(-3,3,0.1),samplesize,replace=TRUE))
+
+Demographics=data.frame(
+  #age
+  "age"=rnorm(samplesize,55,7),
+  #gender
+  "gender"=sample(c("m","f"),samplesize,replace=TRUE))
+
+data=do.call(cbind, list(Demographics, ClinicalCharacteristics, PROItems, PerfoItems))
+
+```
+
+
+# Manipulation:  
+1. Create variable for group membership. 
+```{r GroupMembership}
+
+```
+
+2. Create variable for ‘impaired cognition’ flag (</>= -1.5 AC). 
+```{r SafetyFlag}
+#FAMCAT AC Safety Flag (<-1.5 AC)
+Data$AC_Flag=cut(ClinicalCharacteristics$FAMCAT_AC,breaks=c(-99,-1.5,99),right=FALSE)
+```
+
+3. Scale scores. 
+  + PRO
+```{r PRO_ScaleScores}
+data$PRO_SS=apply(data[,grep("^PRO[1-9].*",names(data))],1,sum,na.rm=TRUE)
+```
+
+  + PerfO
+```{r PerfO_ScaleScores}
+data$PerfO_SS=apply(data[,grep("^PerfO[1-9].*",names(data))],1,sum,na.rm=TRUE)
+```
+
+
+
+
+# Data Cleaning. 
+1. Out of range data. 
+```{r OutOfRange}
+
+data$PRO_OOR_Flag=apply(data[,grep("^PRO[1-9]*",names(data))],1,function(r){!any(r %in% 1:5)})
+
+data$PerfO_OOR_Flag=apply(data[,grep("^PRO[1-9]*",names(data))],1,function(r){!any(r %in% 0:1)})
+
+```
+
+
+
+# Exploration & Descriptives:  
+1. Recruitment Targets. 
+  + Clinical Characteristics/Demographic breakdown (with targets). 
+```{r RecruitTargets}
+#ADRD diag & those without ADRD diag but <-1.5 AC
+table(data$AC_Flag,data$ADRD)
+#gender should be 50% female
+table(data$gender)
+```
+  
+  + Coordinator/administrator notes. 
+
+1. Items. 
+  + PRO Freq response tables.
+```{r PROFreqRespTable}
+
+PROFreqTable=apply(data[,grep("^PRO[1-9].*",names(data))], 2, table)
+PROPropFreqTable=apply(PROFreqTable, 2, prop.table)
+
+```
+  
+  + Bivariate correlation. 
+
+```{r BivariateCorr}
+
+PROCorrTable=cor(data[,grep("^PRO[1-9].*",names(data))], use="pairwise.complete.obs", method="spearman")
+
+hist(PROCorrTable[lower.tri(PROCorrTable)])
+
+```
+
+
+2. Persons.
+  + Scale scores. 
+  + Time distribution per items. 
+  + Time to complete test. 
+  + Characteristics (Clin/Demo) by items/scales
+  
+3. Missing data by item and persons. 
+
+4. Track over time. 
+
+
+
+
+
+
