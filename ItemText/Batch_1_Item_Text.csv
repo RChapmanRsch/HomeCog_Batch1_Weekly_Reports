@@ -1,0 +1,76 @@
+﻿Item_Number,Item_Test,Responses,Domain
+1,How often do you become easily confused?,"Very often, Often, Sometimes, Rarely, Never",Attention
+2,How often do you have brain fog?,"Very often, Often, Sometimes, Rarely, Never",Attention
+3,How often do you need help from others to stay on track?,"Very often, Often, Sometimes, Rarely, Never",Attention
+4,How often are you not aware of what is going on around you?,"Very often, Often, Sometimes, Rarely, Never",Attention
+5,How often do you have trouble staying alert when you need to?,"Very often, Often, Sometimes, Rarely, Never",Attention
+6,How often does it take you a long time to think of what you want to say?,"Very often, Often, Sometimes, Rarely, Never",Attention
+7,How often do you have difficulty focusing during the day?,"Very often, Often, Sometimes, Rarely, Never",Attention
+8,How much difficulty do you have thinking clearly?,"Unable, A lot, Some, A little, None ",Attention
+9,How much difficulty do you have doing math in your head?,"Unable, A lot, Some, A little, None ",Attention
+10,How much difficulty do you have paying attention when there are distractions?,"Unable, A lot, Some, A little, None ",Attention
+11,How much difficulty do you have concentrating when you need to?,"Unable, A lot, Some, A little, None ",Attention
+12,How often do you forget what you intended to do?,"Very often, Often, Sometimes, Rarely, Never",Attention
+13,How much difficulty do you have remembering simple directions without writing them down?,"Unable, A lot, Some, A little, None ",Attention
+14,How often do you make simple mistakes?,"Very often, Often, Sometimes, Rarely, Never",Attention
+15,How often do others have to remind you to take your medicine?,"Very often, Often, Sometimes, Rarely, Never",Executive
+16,How often do others help you with things you used to do by yourself (because of your memory)?,"Very often, Often, Sometimes, Rarely, Never",Executive
+17,How often do people close to you worry about your forgetfulness?,"Very often, Often, Sometimes, Rarely, Never",Executive
+18,How often do others go with you to appointments due to problems with your thinking?,"Very often, Often, Sometimes, Rarely, Never",Executive
+19,How often do you avoid doing activities that take a lot of thinking and concentration?,"Very often, Often, Sometimes, Rarely, Never",Executive
+20,How often do you act too friendly with strangers?,"Very often, Often, Sometimes, Rarely, Never",Executive
+21,How often do you need help from others to plan a meal?,"Very often, Often, Sometimes, Rarely, Never",Executive
+22,How often do you need help from others to plan your meals for the week?,"Very often, Often, Sometimes, Rarely, Never",Executive
+23,How often do you get confused in unfamiliar places?,"Very often, Often, Sometimes, Rarely, Never",Executive
+24,How often do you have difficulty returning to a task after being interrupted?,"Very often, Often, Sometimes, Rarely, Never",Executive
+25,How often do you depend on others to keep your life in order?,"Very often, Often, Sometimes, Rarely, Never",Executive
+26,"How often are others worried about your memory, even though you are not?","Very often, Often, Sometimes, Rarely, Never",Executive
+27,How often do you worry about your memory problems?,"Very often, Often, Sometimes, Rarely, Never",Executive
+28,How often do you say things that might offend another person?,"Very often, Often, Sometimes, Rarely, Never",Executive
+29,How often do you say things without thinking?,"Very often, Often, Sometimes, Rarely, Never",Executive
+30,"How much difficulty do you have describing how you feel (for example, where it hurts, what is wrong)?","Unable, A lot, Some, A little, None ",Executive
+31,How much difficulty do you have thinking through things before acting?,"Unable, A lot, Some, A little, None ",Executive
+32,How much difficulty do you have keeping your living space organized?,"Unable, A lot, Some, A little, None ",Executive
+33,How much difficulty do you have preparing for daily activities like washing or grooming?,"Unable, A lot, Some, A little, None ",Executive
+34,How much difficulty do you have keeping track of what you are doing if there are distractions around you?,"Unable, A lot, Some, A little, None ",Executive
+35,How much difficulty do you have completing simple household tasks like making a cup of coffee?,"Unable, A lot, Some, A little, None ",Executive
+36,"How much difficulty do you have making decisions about your day, such as what to have for lunch?","Unable, A lot, Some, A little, None ",Executive
+37,How much difficulty do you have returning to a task after being interrupted?,"Unable, A lot, Some, A little, None ",Executive
+38,"How much difficulty do you have making everyday decisions, such as what clothes to wear?","Unable, A lot, Some, A little, None ",Executive
+39,How much difficulty do you have planning out the steps of a familiar task?,"Unable, A lot, Some, A little, None ",Executive
+40,How much difficulty do you have organizing your day?,"Unable, A lot, Some, A little, None ",Executive
+41,How much difficulty do you have picking up on a task where you left off?,"Unable, A lot, Some, A little, None ",Executive
+42,How much difficulty do you have controlling your anger when you are frustrated?,"Unable, A lot, Some, A little, None ",Executive
+43,How much difficulty do you have keeping track of what your medicines are for?,"Unable, A lot, Some, A little, None ",Executive
+44,How often do you need help from others to stay organized?,"Very often, Often, Sometimes, Rarely, Never",Executive
+45,How often do you have trouble saying what you mean to others (saying yes when you mean no?),"Very often, Often, Sometimes, Rarely, Never",Language
+46,How much difficulty do you have following instructions to take a new medicine?,"Unable, A lot, Some, A little, None ",Language
+47,How much difficulty do you have describing your health problems?,"Unable, A lot, Some, A little, None ",Language
+48,How much difficulty do you have understanding instructions from your health care provider about your care plan?,"Unable, A lot, Some, A little, None ",Language
+49,How much difficulty do you have carrying on a conversation with family and friends?,"Unable, A lot, Some, A little, None ",Language
+50,How much difficulty do you have giving step-by-step instructions to someone else?,"Unable, A lot, Some, A little, None ",Language
+51,How much difficulty do you have keeping instructions straight without needing them repeated?,"Unable, A lot, Some, A little, None ",Language
+52,"How often do you forget the name of an object you use frequently (e.g., phone, toothbrush)?","Very often, Often, Sometimes, Rarely, Never",Language
+53,How often do you forget the meaning of common words?,"Very often, Often, Sometimes, Rarely, Never",Language
+54,How much difficulty do you have understanding instructions when someone tells them to you?,"Unable, A lot, Some, A little, None ",Language
+55,How much difficulty do you have understanding what someone says the first time you hear it?,"Unable, A lot, Some, A little, None ",Language
+56,How much difficulty do you have finding the right words to say when talking to someone?,"Unable, A lot, Some, A little, None ",Language
+57,How much difficulty do you have remembering what happened during the day?,"Unable, A lot, Some, A little, None ",Memory
+58,How often do you forget to take your medication if you are not reminded?,"Very often, Often, Sometimes, Rarely, Never",Memory
+59,How often do you make mistakes when taking your medications?,"Very often, Often, Sometimes, Rarely, Never",Memory
+60,How often do you forget to take medications at the right time?,"Very often, Often, Sometimes, Rarely, Never",Memory
+61,How often do you need other people to respond to your doctor's questions?,"Very often, Often, Sometimes, Rarely, Never",Memory
+62,How often do you forget things that have happened recently?,"Very often, Often, Sometimes, Rarely, Never",Memory
+63,How often do you ask family members the same question repeatedly?,"Very often, Often, Sometimes, Rarely, Never",Memory
+64,How often do you forget the year?,"Very often, Often, Sometimes, Rarely, Never",Memory
+65,How often do you repeat yourself several times because you forget you have told someone something?,"Very often, Often, Sometimes, Rarely, Never",Memory
+66,"How often do you have difficulty remembering where you put things (for example, your keys)?","Very often, Often, Sometimes, Rarely, Never",Memory
+67,How often do you forget upcoming appointments?,"Very often, Often, Sometimes, Rarely, Never",Memory
+68,How often do you have difficulty adjusting to changes in your medical treatment plan?,"Very often, Often, Sometimes, Rarely, Never",Memory
+69,How much difficulty do you have remembering the names of close family and friends?,"Unable, A lot, Some, A little, None ",Memory
+70,How much difficulty do you have explaining why you are in the hospital?,"Unable, A lot, Some, A little, None ",Memory
+71,"How much difficulty do you have answering questions about yourself such as your name, age, and where you are?","Unable, A lot, Some, A little, None ",Memory
+72,How much difficulty do you have remembering what you need to do each day?,"Unable, A lot, Some, A little, None ",Memory
+73,How much difficulty do you have remembering a few shopping items without a list?,"Unable, A lot, Some, A little, None ",Memory
+74,How often do you get lost in your neighborhood?,"Very often, Often, Sometimes, Rarely, Never",Memory
+75,How often do you not trust your memory?,"Very often, Often, Sometimes, Rarely, Never",Memory

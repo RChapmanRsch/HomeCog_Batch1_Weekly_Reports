@@ -1,117 +1,846 @@
 ---
 title: "HomeCog Batch1 Weekly Reports"
-output: html_notebook
+output:
+  html_document:
+    code_folding: hide
 ---
-Coding for weekly review of HomeCog Batch 1 data collection. The purpose of this document is to structure what will be reviewed on a weekly basis. 
 
-# Load the data (right now simulated). 
+Coding for weekly audit of HomeCog Batch 1 data collection. The purpose of this document is to structure what will be circulated and reviewed by the HoPE Aim 1 team on a weekly basis. 
 
-```{r DataSim}
-PROni=35
-PerfOni=35
-samplesize=50
+To-Do
 
-PROItems=matrix(sample(1:5,PROni*samplesize,replace=TRUE),nrow=samplesize,ncol=PROni, dimnames = list(c(),paste0("PRO",1:PROni)))
-PerfoItems=matrix(sample(c(0,1),PerfOni*samplesize,replace=TRUE),nrow=samplesize,ncol=PerfOni, dimnames=list(c(),paste0("PerfO",1:PerfOni)))
+ask coordinators about REDCap 'enrollment' variable <- should only ever by '1' correct?
 
-ClinicalCharacteristics=data.frame(
-  #ADRD diagnosis (sim 1:5)
-  "ADRD"=sample(1:5,samplesize,replace=TRUE),
-  #FAMCAT AC
-  "FAMCAT_AC"=sample(seq(-3,3,0.1),samplesize,replace=TRUE),
-  "FAMCAT_Mob"=sample(seq(-3,3,0.1),samplesize,replace=TRUE),
-  "FAMCAT_DA"=sample(seq(-3,3,0.1),samplesize,replace=TRUE))
+produce PerfO item table
+closeout FAMCATS
+integrate REDCap into data descriptives and cleaning
+integrate qualitative (Notes) data into descriptives
+get tracking over time working
+look into missing data <- write person-level and item-level reports
+integrate into slide set
 
-Demographics=data.frame(
-  #age
-  "age"=rnorm(samplesize,55,7),
-  #gender
-  "gender"=sample(c("m","f"),samplesize,replace=TRUE))
 
-data=do.call(cbind, list(Demographics, ClinicalCharacteristics, PROItems, PerfoItems))
+```{r setup, include=FALSE}
+#install.packages("data.table")
+library(data.table)
+#install.packages("DT")
+library(DT)
+
+knitr::opts_chunk$set(echo = TRUE, warning=FALSE, message=FALSE)
+```
+
+## **Loading Data:**
+```{r loadExcel}
+setwd( "/Users/chapm564/Documents/GitHub/HomeCog_Batch1_Weekly_Reports")
+
+#Item Text
+item_text=read.csv("~/Documents/GitHub/HomeCog_Batch1_Weekly_Reports/ItemText/Batch_1_Item_Text.csv")
+
+#HoPE Calibration Recruitment
+Recruitment=read.delim("HoPe Calibration - All Patients.txt",sep="\t")
+names(Recruitment)[names(Recruitment)=="Participant.ID"]="Recruitment_id"
+names(Recruitment)[names(Recruitment)=="FastTest.ID"]="Test.Code"
+names(Recruitment)[names(Recruitment)=="Age"]="Recruitment_age"
+names(Recruitment)[names(Recruitment)=="Sex"]="Recruitment_gender"
+
+#REDCap data
+REDCap=read.csv("ProjectHoPeCalibrati_DATA_2023-12-15_1129.csv")
+names(REDCap)[names(REDCap)=="record_id"]="REDCap_id"
+names(REDCap)[names(REDCap)=="fasttest"]="Test.Code"
+names(REDCap)[names(REDCap)=="enrollment_date"]="REDCap_date"
+names(REDCap)[names(REDCap)=="age"]="REDCap_age"
+names(REDCap)[names(REDCap)=="gender"]="REDCap_gender"
+REDCap$REDCap_gender[REDCap$REDCap_gender==1]="F"
+REDCap$REDCap_gender[REDCap$REDCap_gender==2]="M"
+REDCap$REDCap_date=strftime(REDCap$REDCap_date, "%m/%d/%Y")
+
+
+# 
+# record_id	<- REDCap ID- rename
+# enrollment <- 1/0? maybe remove if not 1
+# enrollment_date <- date of adminsitration, check against FastTest date
+# fasttest <- merge
+# age <- check against Recruitment spreadsheet
+# gender <- check against Recruitment spreadsheet
+# interest <- PHQ2?
+# feeling <- PHQ2?
+# within_year <- SDOH questions answered within a year
+# alcohol <- SDOH1
+# dentist <- SDOH2
+# employment <- SDOH3
+# inactive <- SDOH3a
+# active <- SDOH3b
+# olive_oil <- SDOH4
+# exercise <- SDOH5
+# minutes <- SDOH6
+# telephone <- SDOH7
+# transportation <- SDOH8
+# basics <- ????
+# who <- Description of who's answering CareGiving questions below 
+# return_you <- CG1a
+# return_care <- CG1b
+# help_you <- CG2a
+# help_care <- CG2b
+# hours_you <- CG3a
+# hours_care <- CG3b
+# limit_care <- CG4
+# yes___1 <- CG4a
+# yes___2 <- CG4b
+# limit_you <- CG5
+# yes_you___1 <- CG5a
+# yes_you___2 <- CG5b
+# comfort_you <- CG6a
+# comfort_care <- CG6b
+# meds_you <- CG7a
+# meds_care <- CG7b
+# form_1_complete <- ????
+
+
+#Read in FastTest Raw Response Data
+FastTest=read.csv("ExamineeResponses-12-19-2023-8-59-11.csv", skip = 1, stringsAsFactors = TRUE)
+FastTest=FastTest[FastTest$Test=="Batch_1",]
+#Remove variables that will be unused for analyses
+FastTest=FastTest[,!(names(FastTest) %in% c("Test.Code.Email.s.","Test.Results.Email.s.","External.ID","SE","Passed"))]
+#relabel date as FastTest date
+names(FastTest)[names(FastTest)=="Date"]="FastTest_date"
+FastTest$FastTest_date=as.character(FastTest$FastTest_date)
+FastTest$Test.Code=as.character(FastTest$Test.Code)
+
+#Relabel variables from FAMCAT with "FAMCAT_" prefix
+FAMCAT=grep("^X[0-9]+[0-9]+[0-9]", names(FastTest))
+names(FastTest)[FAMCAT]=gsub("X","FAMCAT_",names(FastTest)[FAMCAT])
+
+#Relabel variables from HoPE Batch 1 PRO items with "HoPE_PRO_" prefix
+HoPE_PRO=grep("^X[0-9]+[0-9]|^X[0-9]", names(FastTest), value=TRUE)
+names(FastTest)[names(FastTest) %in% HoPE_PRO]=gsub("X","HoPE_PRO_",names(FastTest)[names(FastTest) %in% HoPE_PRO])
+HoPE_PRO=gsub("X","HoPE_PRO_",HoPE_PRO)
+
+#Relabel variables from HoPE Batch 1 PerfO items with "HoPE_PerfO_" prefix
+HoPE_PerfO=grep("^Memory_|^Naming_|^Semantic_Assoc_|^Comprehension_|^Vigilance_|^Abstraction_|^Sequencing_|^ZChI|^Cc5g|^Uu16|^Arithmetic_|^Clock_|^VisuoPerc_|^VisuoSpatial_" , names(FastTest), value=TRUE)
+names(FastTest)[names(FastTest) %in% HoPE_PerfO]=paste0("HoPE_PerfO_",names(FastTest)[names(FastTest) %in% HoPE_PerfO])
+HoPE_PerfO=paste0("HoPE_PerfO_",HoPE_PerfO)
+
+#Reduce Batch 1 PRO 'item text' table to only those items administered in Batch 1 (36 items)
+item_text=item_text[item_text$Item_Number %in% gsub("HoPE_PRO_","",HoPE_PRO),]
+
+###############################
+### load in FAMCAT Scale Scores
+###############################
+
+FastTest2=read.csv("ExamineeData-12-19-2023-8-59-01.csv")
+FastTest2=FastTest2[FastTest2$Test=="Male"|FastTest2$Test=="Female"& !is.na(FastTest2$First.Name),]
+
+
+###############################
+### load in FAMCAT Scale Scores
+###############################
+
+ResponseTimes=read.csv("ItemTimes-12-19-2023-8-59-21.csv")
+
+ResponseTimes=ResponseTimes[ResponseTimes$Test=="Batch_1",]
+#Remove variables that will be unused for analyses
+ResponseTimes=ResponseTimes[,!(names(ResponseTimes) %in% c("Test.Code.Email.s.","Test.Results.Email.s.","External.ID","SE","Passed"))]
+#relabel date as FastTest date
+names(ResponseTimes)[names(ResponseTimes)=="Date"]="FastTest_date"
+
+#Relabel variables from FAMCAT with "FAMCAT_" prefix
+FAMCATxnames=grep("^X[0-9]+[0-9]+[0-9]", names(ResponseTimes))
+names(ResponseTimes)[FAMCATxnames]=gsub("X","FAMCAT_",names(ResponseTimes)[FAMCATxnames])
+
+#Relabel variables from HoPE Batch 1 PRO items with "HoPE_PRO_" prefix
+HoPE_PROxnames=grep("^X[0-9]+[0-9]|^X[0-9]", names(ResponseTimes), value=TRUE)
+names(ResponseTimes)[names(ResponseTimes) %in% HoPE_PROxnames]=gsub("X","HoPE_PRO_",names(ResponseTimes)[names(ResponseTimes) %in% HoPE_PROxnames])
+
+
+#Relabel variables from HoPE Batch 1 PerfO items with "HoPE_PerfO_" prefix
+HoPE_PerfOxnames=grep("^Memory_|^Naming_|^Semantic_Assoc_|^Comprehension_|^Vigilance_|^Abstraction_|^Sequencing_|^ZChI|^Cc5g|^Uu16|^Arithmetic_|^Clock_|^VisuoPerc_|^VisuoSpatial_" , names(ResponseTimes), value=TRUE)
+names(ResponseTimes)[names(ResponseTimes) %in% HoPE_PerfOxnames]=paste0("HoPE_PerfO_",names(ResponseTimes)[names(ResponseTimes) %in% HoPE_PerfOxnames])
 
 ```
 
+```{r DataLinking}
 
-# Manipulation:  
-1. Create variable for group membership. 
-```{r GroupMembership}
+#Adjustments to be relayed to coordinators 
+REDCap[REDCap$Test.Code=="MIH-090-764-944", "REDCap_date"]="11/30/2023"
+REDCap[REDCap$Test.Code=="ECO-622-460-859", "REDCap_gender"]="F"
+FastTest=FastTest[!(FastTest$Test.Code %in% c("CBU-218-600-873","NYS-954-156-833")),]
+FastTest2=FastTest2[!(FastTest2$Test.Code %in% c("CBU-218-600-873","NYS-954-156-833")),]
+
+
+# Administration Date Linking
+MergeCheck=merge(FastTest, REDCap, by="Test.Code")
+if(length(which(MergeCheck$FastTest_date != MergeCheck$REDCap_date))==0){
+    names(FastTest)[names(FastTest)=="FastTest_date"]="Date"
+    names(REDCap)[names(REDCap)=="REDCap_date"]="Date"
+}else{print(paste("DATE MISMATCH: FastTest & REDCap"))}
+
+# ID Linking
+MergeCheck=merge(Recruitment, REDCap, by="Test.Code")
+if(length(which(MergeCheck$Recruitment_id != MergeCheck$REDCap_id))==0){
+    names(Recruitment)[names(Recruitment)=="Recruitment_id"]="ID"
+    names(REDCap)[names(REDCap)=="REDCap_id"]="ID"
+  }else{print("ID MISMATCH: Recruitment & REDCap")}
+
+# Age
+if(length(which(as.numeric(gsub("-year old", "",MergeCheck$Recruitment_age)) != MergeCheck$REDCap_age))==0){
+    names(Recruitment)[names(Recruitment)=="Recruitment_id"]="ID"
+    names(REDCap)[names(REDCap)=="REDCap_id"]="ID"
+  }else{print("AGE MISMATCH: Recruitment & REDCap")}
+
+# Gender
+if(length(which(MergeCheck$Recruitment_gender != MergeCheck$REDCap_gender))==0){
+    names(Recruitment)[names(Recruitment)=="Recruitment_gender"]="Gender"
+    names(REDCap)[names(REDCap)=="REDCap_gender"]="Gender"
+  }else{print("GENDER MISMATCH: Recruitment & REDCap")}
+
+
+###############################################
+### Merge #####################################
+###############################################
+#Merge together FastTest Batch 1 and FastTest Non-Porch FAMCAT
+data=merge(by = "Test.Code", all.x=TRUE,
+  x=FastTest,
+  y=FastTest2[,c("Test.Code",sapply(c("APPLIED_COGNITION","DAILY_ACTIVITIES","MOBILITY"), paste0, c("_SCORE","_SEM")))])
+#Merge together FastTest (Batch1 & FAMCAT NonPorch) with Recruitment data
+data=merge(by = "Test.Code", all.x=TRUE,
+  x=data,
+  y=Recruitment)
+#Merge together FastTest (Batch1 & FAMCAT NonPorch) & Recruitment data with REDCap data
+data=merge(by = "Test.Code", all.x=TRUE,
+  x=data,
+  y=REDCap)
 
 ```
 
-2. Create variable for ‘impaired cognition’ flag (</>= -1.5 AC). 
+### PRO item text/content domains
+`r datatable(item_text, rownames=FALSE, options = list(
+  columnDefs = list(list(className = 'dt-center', targets = 0)),
+  pageLength = 2))`
+
+------------------------------------------------------------------------------------------------------
+
+## **Manipulation:**  
+
+### 1. Create variable for ‘impaired cognition’ flag (</>= -1.5 AC). 
 ```{r SafetyFlag}
-#FAMCAT AC Safety Flag (<-1.5 AC)
-Data$AC_Flag=cut(ClinicalCharacteristics$FAMCAT_AC,breaks=c(-99,-1.5,99),right=FALSE)
+#FAMCAT AC Safety Flag (< -1.5 AC)
+data$AC_Flag= data$APPLIED_COGNITION_SCORE< -1.5
 ```
 
-3. Scale scores. 
-  + PRO
-```{r PRO_ScaleScores}
-data$PRO_SS=apply(data[,grep("^PRO[1-9].*",names(data))],1,sum,na.rm=TRUE)
+### 2. Create variable for group membership. 
+```{r GroupMembership, eval=FALSE}
+
+#Group1 - those with ADRD diagnoses
+data$Group1= data$ADRD != 0
+
+#Group2 - those without ADRD diagnosis but FAMCAT AC < -1.5
+data$Group2= (data$ADRD == 0 & data$AC_Flag)
+
+#Group3 - those without ADRD and FAMCAT AC >=-1.5
+data$Group3= (data$ADRD == 0 & !data$AC_Flag)
+
 ```
 
-  + PerfO
-```{r PerfO_ScaleScores}
-data$PerfO_SS=apply(data[,grep("^PerfO[1-9].*",names(data))],1,sum,na.rm=TRUE)
+------------------------------------------------------------------------------------------------------
+
+## **Data Cleaning.** 
+  
+### 0. Data recoding.  
+```{r Recoding, results='hide'}
+
+#####Recruitment
+
+#need to reduce down the dataset to just the folks with FastTest data or just those with data for recruitment
+
+#Gender
+table(Recruitment$Recruitment_gender)
+#Race <- 15 folks missing or ""
+table(Recruitment$Race)
+#Ethnicity <- 15 folks missing or ""
+table(Recruitment$Ethnicity)
+#Age 
+Recruitment$Recruitment_age=as.numeric(gsub("-year old","",Recruitment$Recruitment_age))
+table(Recruitment$Recruitment_age)
+#Age bands (<65 & >=65)
+Recruitment$AgeBands=as.character(cut(as.numeric(Recruitment$Recruitment_age), breaks=c(0,65,120), right=FALSE))
+data$AgeBands=cut(data$REDCap_age, breaks=c(0,65,120), right=FALSE)
+#Cognitive impairment
+table(Recruitment$Cogn.Impairment)
+
+#HomeCog Status
+table(Recruitment$HomeCog.Interrupted....completed..)
+
+#FAMCAT Status
+table(Recruitment$FAMCAT.Interrupted....completed..)
+
+#Audio
+table(Recruitment$Audio..Good.Bad.)
+
+#Notes
+table(Recruitment$Notes)
+
+#####FastTest PRO
+for(var in HoPE_PRO){
+  levels(data[,var])[which(levels(data[,var])=="")]=NA
+  
+  levels(data[,var])[which(levels(data[,var])=="Very Often")]=1
+  levels(data[,var])[which(levels(data[,var])=="Often")]=2
+  levels(data[,var])[which(levels(data[,var])=="Sometimes")]=3
+  levels(data[,var])[which(levels(data[,var])=="Rarely")]=4
+  levels(data[,var])[which(levels(data[,var])=="Never")]=5  
+  
+  levels(data[,var])[which(levels(data[,var])=="Unable")]=1
+  levels(data[,var])[which(levels(data[,var])=="A lot")]=2
+  levels(data[,var])[which(levels(data[,var])=="Some")]=3
+  levels(data[,var])[which(levels(data[,var])=="A little")]=4  
+  levels(data[,var])[which(levels(data[,var])=="None")]=5
+  data[,var]=as.numeric(data[,var])
+}
+
+
+#FastTest PerfO
+
+for(var in HoPE_PerfO){data[,var]=as.factor(data[,var])}
+
+#Memory
+levels(data[,"HoPE_PerfO_Memory_1"])[levels(data[,"HoPE_PerfO_Memory_1"])=="B"]=1
+levels(data[,"HoPE_PerfO_Memory_1"])[!levels(data[,"HoPE_PerfO_Memory_1"]) %in% c("","1")]=0
+  
+levels(data[,"HoPE_PerfO_Memory_2"])[levels(data[,"HoPE_PerfO_Memory_2"])=="A"]=1
+levels(data[,"HoPE_PerfO_Memory_2"])[!levels(data[,"HoPE_PerfO_Memory_2"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Memory_3"])[levels(data[,"HoPE_PerfO_Memory_3"])=="D"]=1
+levels(data[,"HoPE_PerfO_Memory_3"])[!levels(data[,"HoPE_PerfO_Memory_3"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Memory_4"])[levels(data[,"HoPE_PerfO_Memory_4"])=="C"]=1
+levels(data[,"HoPE_PerfO_Memory_4"])[!levels(data[,"HoPE_PerfO_Memory_4"]) %in% c("","1")]=0
+
+#Naming
+levels(data[,"HoPE_PerfO_Naming_1"])[levels(data[,"HoPE_PerfO_Naming_1"])=="D"]=1
+levels(data[,"HoPE_PerfO_Naming_1"])[!levels(data[,"HoPE_PerfO_Naming_1"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Naming_2"])[levels(data[,"HoPE_PerfO_Naming_2"])=="A"]=1
+levels(data[,"HoPE_PerfO_Naming_2"])[!levels(data[,"HoPE_PerfO_Naming_2"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Naming_3"])[levels(data[,"HoPE_PerfO_Naming_3"])=="B"]=1
+levels(data[,"HoPE_PerfO_Naming_3"])[!levels(data[,"HoPE_PerfO_Naming_3"]) %in% c("","1")]=0
+
+#Semantic Association
+levels(data[,"HoPE_PerfO_Semantic_Assoc_1"])[levels(data[,"HoPE_PerfO_Semantic_Assoc_1"])=="C"]=1
+levels(data[,"HoPE_PerfO_Semantic_Assoc_1"])[!levels(data[,"HoPE_PerfO_Semantic_Assoc_1"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Semantic_Assoc_2"])[levels(data[,"HoPE_PerfO_Semantic_Assoc_2"])=="D"]=1
+levels(data[,"HoPE_PerfO_Semantic_Assoc_2"])[!levels(data[,"HoPE_PerfO_Semantic_Assoc_2"]) %in% c("","1")]=0
+
+
+#Comprehension
+levels(data[,"HoPE_PerfO_Comprehension_1"])[levels(data[,"HoPE_PerfO_Comprehension_1"])=="B"]=1
+levels(data[,"HoPE_PerfO_Comprehension_1"])[!levels(data[,"HoPE_PerfO_Comprehension_1"]) %in% c("","1")]=0
+
+#Vigilance
+levels(data[,"HoPE_PerfO_Vigilance_1"])[levels(data[,"HoPE_PerfO_Vigilance_1"])=="C"]=1
+levels(data[,"HoPE_PerfO_Vigilance_1"])[!levels(data[,"HoPE_PerfO_Vigilance_1"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Vigilance_2"])[levels(data[,"HoPE_PerfO_Vigilance_2"])=="C"]=1
+levels(data[,"HoPE_PerfO_Vigilance_2"])[!levels(data[,"HoPE_PerfO_Vigilance_2"]) %in% c("","1")]=0
+
+#Abstraction
+levels(data[,"HoPE_PerfO_Abstraction_1"])[levels(data[,"HoPE_PerfO_Abstraction_1"])=="B"]=1
+levels(data[,"HoPE_PerfO_Abstraction_1"])[!levels(data[,"HoPE_PerfO_Abstraction_1"]) %in% c("","1")]=0
+
+#Sequencing - this might take some work
+levels(data[,"HoPE_PerfO_ZChI"])[levels(data[,"HoPE_PerfO_ZChI"])=="E"]=1
+levels(data[,"HoPE_PerfO_ZChI"])[!levels(data[,"HoPE_PerfO_ZChI"]) %in% c("","1")]=0
+data[,"HoPE_PerfO_Sequencing_1"]=data[,"HoPE_PerfO_ZChI"]
+data=data[,-which(names(data)=="HoPE_PerfO_ZChI")]
+HoPE_PerfO=HoPE_PerfO[-which(HoPE_PerfO=="HoPE_PerfO_ZChI")]
+
+levels(data[,"HoPE_PerfO_Cc5g"])[levels(data[,"HoPE_PerfO_Cc5g"])=="20"]=1
+levels(data[,"HoPE_PerfO_Cc5g"])[!levels(data[,"HoPE_PerfO_Cc5g"]) %in% c("","1")]=0
+data[,"HoPE_PerfO_Sequencing_2"]=data[,"HoPE_PerfO_Cc5g"]
+data=data[,-which(names(data)=="HoPE_PerfO_Cc5g")]
+HoPE_PerfO=HoPE_PerfO[-which(HoPE_PerfO=="HoPE_PerfO_Cc5g")]
+
+levels(data[,"HoPE_PerfO_Uu16"])[levels(data[,"HoPE_PerfO_Uu16"])=="72"]=1
+levels(data[,"HoPE_PerfO_Uu16"])[!levels(data[,"HoPE_PerfO_Uu16"]) %in% c("","1")]=0
+data[,"HoPE_PerfO_Sequencing_3"]=data[,"HoPE_PerfO_Uu16"]
+data=data[,-which(names(data)=="HoPE_PerfO_Uu16")]
+HoPE_PerfO=HoPE_PerfO[-which(HoPE_PerfO=="HoPE_PerfO_Uu16")]
+
+#Arithmetic
+levels(data[,"HoPE_PerfO_Arithmetic_1"])[levels(data[,"HoPE_PerfO_Arithmetic_1"])=="A"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_1"])[!levels(data[,"HoPE_PerfO_Arithmetic_1"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Arithmetic_2"])[levels(data[,"HoPE_PerfO_Arithmetic_2"])=="C"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_2"])[!levels(data[,"HoPE_PerfO_Arithmetic_2"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Arithmetic_3"])[levels(data[,"HoPE_PerfO_Arithmetic_3"])=="B"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_3"])[!levels(data[,"HoPE_PerfO_Arithmetic_3"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Arithmetic_4"])[levels(data[,"HoPE_PerfO_Arithmetic_4"])=="A"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_4"])[!levels(data[,"HoPE_PerfO_Arithmetic_4"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Arithmetic_5"])[levels(data[,"HoPE_PerfO_Arithmetic_5"])=="B"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_5"])[!levels(data[,"HoPE_PerfO_Arithmetic_5"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Arithmetic_6"])[levels(data[,"HoPE_PerfO_Arithmetic_6"])=="B"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_6"])[!levels(data[,"HoPE_PerfO_Arithmetic_6"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Arithmetic_7"])[levels(data[,"HoPE_PerfO_Arithmetic_7"])=="C"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_7"])[!levels(data[,"HoPE_PerfO_Arithmetic_7"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Arithmetic_8"])[levels(data[,"HoPE_PerfO_Arithmetic_8"])=="A"]=1
+levels(data[,"HoPE_PerfO_Arithmetic_8"])[!levels(data[,"HoPE_PerfO_Arithmetic_8"]) %in% c("","1")]=0
+
+#Clock
+levels(data[,"HoPE_PerfO_Clock_1"])[levels(data[,"HoPE_PerfO_Clock_1"])=="A"]=1
+levels(data[,"HoPE_PerfO_Clock_1"])[!levels(data[,"HoPE_PerfO_Clock_1"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_Clock_2"])[levels(data[,"HoPE_PerfO_Clock_2"])=="B"]=1
+levels(data[,"HoPE_PerfO_Clock_2"])[!levels(data[,"HoPE_PerfO_Clock_2"]) %in% c("","1")]=0
+
+#VisuoPerception
+levels(data[,"HoPE_PerfO_VisuoPerc_1"])[levels(data[,"HoPE_PerfO_VisuoPerc_1"])=="D"]=1
+levels(data[,"HoPE_PerfO_VisuoPerc_1"])[!levels(data[,"HoPE_PerfO_VisuoPerc_1"]) %in% c("","1")]=0
+
+levels(data[,"HoPE_PerfO_VisuoPerc_2"])[levels(data[,"HoPE_PerfO_VisuoPerc_2"])=="C"]=1
+levels(data[,"HoPE_PerfO_VisuoPerc_2"])[!levels(data[,"HoPE_PerfO_VisuoPerc_2"]) %in% c("","1")]=0
+
+#VisuoPerception
+levels(data[,"HoPE_PerfO_VisuoSpatial_1"])[levels(data[,"HoPE_PerfO_VisuoSpatial_1"])=="A"]=1
+levels(data[,"HoPE_PerfO_VisuoSpatial_1"])[!levels(data[,"HoPE_PerfO_VisuoSpatial_1"]) %in% c("","1")]=0
+
+for(var in HoPE_PerfO){data[,var]=as.numeric(as.character(data[,var]))}
+
 ```
 
-
-
-
-# Data Cleaning. 
-1. Out of range data. 
+### 1. Out of range data. 
 ```{r OutOfRange}
 
-data$PRO_OOR_Flag=apply(data[,grep("^PRO[1-9]*",names(data))],1,function(r){!any(r %in% 1:5)})
+#FastTest
+data$PRO_OOR_Flag=apply(data[,HoPE_PRO],1,function(r){!any(r %in% c(1:5,NA))})
+data$PerfO_OOR_Flag=apply(data[,HoPE_PerfO],1,function(r){!any(r %in% c(0:1,NA))})
 
-data$PerfO_OOR_Flag=apply(data[,grep("^PRO[1-9]*",names(data))],1,function(r){!any(r %in% 0:1)})
 
 ```
 
+### 2. Unique values.
+```{r UniqueValues}
+#PROs
+cat("PRO Unique Values:", unique(c(unlist(apply(data[,HoPE_PRO], 2, unique)))))
+
+#PerfOs
+cat("PerfO Unique Values:",unique(c(unlist(apply(data[,HoPE_PerfO], 2, unique)))))
+
+#REDCap
+table(REDCap$enrollment) #<- Should only be zero, ask coordinators?
 
 
-# Exploration & Descriptives:  
-1. Recruitment Targets. 
-  + Clinical Characteristics/Demographic breakdown (with targets). 
+```
+
+### 3. Scale scores. 
+```{r ScaleScores}
+#Batch1 (FastTest)
+data$PRO_SS=apply(data[,HoPE_PRO],1,sum,na.rm=TRUE)
+data$PerfO_SS=apply(data[,HoPE_PerfO],1,sum,na.rm=TRUE)
+
+#PHQ2 (REDCap)
+
+
+
+
+```
+
+------------------------------------------------------------------------------------------------------
+
+## **Exploration & Descriptives:**  
+### 1. Recruitment Targets. 
+####  + Clinical Characteristics/Demographic breakdown (with targets). 
 ```{r RecruitTargets}
 #ADRD diag & those without ADRD diag but <-1.5 AC
-table(data$AC_Flag,data$ADRD)
+#table(data$AC_Flag,data$ADRD)
 #gender should be 50% female
-table(data$gender)
+round(prop.table(table(data$Sex)),2)
 ```
   
-  + Coordinator/administrator notes. 
+####  + Coordinator/administrator notes. 
 
-1. Items. 
-  + PRO Freq response tables.
+```{r CoordNotes, results='hide'}
+
+table(data$Notes[which(data$Notes!="")])
+
+```
+
+
+### 2. Items. 
+####  + PRO Frequency (N/Proportion) response tables.
 ```{r PROFreqRespTable}
 
-PROFreqTable=apply(data[,grep("^PRO[1-9].*",names(data))], 2, table)
-PROPropFreqTable=apply(PROFreqTable, 2, prop.table)
+PROFreqTable=apply(data[,HoPE_PRO], 2, function(x){x=as.factor(x);levels(x)=1:5;table(x);})
+colnames(PROFreqTable)=gsub("HoPE_PRO_","",colnames(PROFreqTable))
+PROFreqTable=cbind(PROFreqTable,"Total"=rowSums(PROFreqTable))
+datatable(t(PROFreqTable),
+            colnames = c('Item' = 1),
+            options = list(
+              columnDefs = list(list(className = 'dt-center', targets = 0:5)),
+              pageLength = 2))
+
+PROPropFreqTable=round(prop.table(PROFreqTable, margin=2)*100,2)
+datatable(t(PROPropFreqTable),
+            colnames = c('Item' = 1),
+            options = list(
+              columnDefs = list(list(className = 'dt-center', targets = 0:5)),
+              pageLength = 2))
+
 
 ```
   
-  + Bivariate correlation. 
+  
+####  + PRO mean score by item. 
+  
+```{r PROitemmeans}
+
+PRO_means=round(apply(data[,HoPE_PRO], 2, mean, na.rm=TRUE),1)
+names(PRO_means)=gsub("HoPE_PRO_","",HoPE_PRO)
+
+
+datatable(cbind("Item"=names(PRO_means),"Item Mean"=PRO_means), 
+            rownames = FALSE,
+            extensions = 'Buttons',
+            options = list(
+              paging = TRUE,
+              dom = 'Bfrltip',
+              buttons = c('copy', 'csv', 'excel', 'pdf'),
+              columnDefs = list(list(className = 'dt-center', targets = 0:1)),
+              pageLength = 2,
+              lengthMenu=c(3,5,10,25,50,100))
+          )
+
+
+
+h=hist(PRO_means, plot=FALSE)
+plot(h, xlim=c(1,5), ylim=c(0,max(h$counts)*1.25), main="PRO Item\nItem Means", xlab="Item Mean (1-5)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+
+
+```
+
+
+####  + PerfO mean score by item. 
+
+```{r PerfOitemmeans}
+
+PerfO_means=round(apply(data[,HoPE_PerfO], 2, mean, na.rm=TRUE),1)
+names(PerfO_means)=gsub("HoPE_PerfO_","",HoPE_PerfO)
+
+datatable(cbind("Item"=names(PerfO_means),"Item Mean"=PerfO_means), 
+            rownames = FALSE,
+            extensions = 'Buttons',
+            options = list(
+              paging = TRUE,
+              dom = 'Bfrltip',
+              buttons = c('copy', 'csv', 'excel', 'pdf'),
+              columnDefs = list(list(className = 'dt-center', targets = 0:1)),
+              pageLength = 2,
+              lengthMenu=c(3,5,10,25,50,100))
+          )
+
+
+
+h=hist(PerfO_means, plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="Performance Item\nItem Means", xlab="Item Mean (0-1)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+
+```
+
+####  +  PRO item-total correlation. 
+
+```{r PROitemtotalcorr}
+
+PRO_ItemTotalCorr=apply(data[,HoPE_PRO], 2, function(x){cor(x,data$PRO_SS, method="spearman", use = "pairwise.complete.obs")})
+names(PRO_ItemTotalCorr)=gsub("HoPE_PRO_","",names(PRO_ItemTotalCorr))
+PRO_ItemTotalCorr=round(PRO_ItemTotalCorr,2)
+
+datatable(cbind("Item Number"=names(PRO_ItemTotalCorr),"Item-SS Correlation"=PRO_ItemTotalCorr), 
+            rownames = FALSE,
+            extensions = 'Buttons',
+            options = list(
+              paging = TRUE,
+              dom = 'Bfrltip',
+              buttons = c('copy', 'csv', 'excel', 'pdf'),
+              columnDefs = list(list(className = 'dt-center', targets = 0:1)),
+              pageLength = 2,
+              lengthMenu=c(3,5,10,25,50,100)))
+
+h=hist(PRO_ItemTotalCorr, plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="PRO Item\nItem-Total Correlation", xlab="r (spearman)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+
+
+
+
+
+```
+
+
+####  +  PerfO item-total correlation. 
+
+```{r PerfOitemtotalcorr}
+PerfO_ItemTotalCorr=apply(data[,HoPE_PerfO], 2, function(x){cor(x,data$PerfO_SS, method="spearman", use = "pairwise.complete.obs")})
+names(PerfO_ItemTotalCorr)=gsub("HoPE_PerfO_","",names(PerfO_ItemTotalCorr))
+PerfO_ItemTotalCorr=round(PerfO_ItemTotalCorr,2)
+
+datatable(cbind("Item Number"=names(PerfO_ItemTotalCorr),"Item-SS Correlation"=PerfO_ItemTotalCorr), 
+            rownames = FALSE,
+            extensions = 'Buttons',
+            options = list(
+              paging = TRUE,
+              dom = 'Bfrltip',
+              buttons = c('copy', 'csv', 'excel', 'pdf'),
+              columnDefs = list(list(className = 'dt-center', targets = 0:1)),
+              pageLength = 2,
+              lengthMenu=c(3,5,10,25,50,100)))
+
+h=hist(PerfO_ItemTotalCorr, plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="Performance Item\nItem-Total Correlation", xlab="r (spearman)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+
+
+```
+  
+  
+####  + Bivariate correlation. 
 
 ```{r BivariateCorr}
 
-PROCorrTable=cor(data[,grep("^PRO[1-9].*",names(data))], use="pairwise.complete.obs", method="spearman")
+BVCorrTable=cor(data[,c(HoPE_PRO,HoPE_PerfO)], use="pairwise.complete.obs", method="spearman")
 
-hist(PROCorrTable[lower.tri(PROCorrTable)])
+
+h=hist(BVCorrTable[lower.tri(BVCorrTable)], plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="Batch 1 (PRO & PerfO)\nBivariate Correlation Distribution", xlab="r (spearman)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+
+PROCorrTable=BVCorrTable[HoPE_PRO,HoPE_PRO]
+
+PerfOCorrTable=BVCorrTable[HoPE_PerfO,HoPE_PerfO]
+
+h=hist(PerfOCorrTable[lower.tri(PerfOCorrTable)], plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="Performance Item\nBivariate Correlation Distribution", xlab="r (spearman)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+
+h=hist(PROCorrTable[lower.tri(PROCorrTable)], plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="PRO Item\nBivariate Correlation Distribution", xlab="r (spearman)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+
+
+
 
 ```
 
 
-2. Persons.
-  + Scale scores. 
-  + Time distribution per items. 
-  + Time to complete test. 
-  + Characteristics (Clin/Demo) by items/scales
-  
-3. Missing data by item and persons. 
+### 2. Persons.
+####  + Scale scores. 
+```{r Person_ScaleScores}
 
-4. Track over time. 
+boxplot(data$PRO_SS, ylim=c(length(HoPE_PRO),length(HoPE_PRO)*5), main="PRO Sum Score Boxplot")
+
+boxplot(data$PerfO_SS, ylim=c(length(HoPE_PerfO)*0,length(HoPE_PerfO)), main="PerfO Sum Score Boxplot")
+
+```
+  
+####  + Time to complete test. 
+```{r TimeUsedTest}
+
+boxplot(X~Group,
+  data.frame(
+      X=c(data$Time.Used..s./60,
+        apply(ResponseTimes[,HoPE_PerfO],1,sum, na.rm=TRUE)/60,
+        apply(ResponseTimes[,HoPE_PRO],1,sum, na.rm=TRUE)/60),
+          Group=rep(c("Batch1","PerfO_only","PRO_only"),times=c(nrow(data),nrow(ResponseTimes),nrow(ResponseTimes)))),
+  ylab="time elapsed, minutes",
+  main="Testing Time")
+
+```
+
+####  + Time distribution per items. 
+```{r TimeUsedItems}
+ResponseTimes=merge(ResponseTimes,data[,c("Test.Code","PRO_SS","PerfO_SS")],by="Test.Code",all.x = TRUE)
+
+#Item
+ItemTime=do.call(rbind,lapply(c(HoPE_PerfO), function(item){
+    if(grepl("*PRO*",item)){scale="PRO_SS"}
+    if(grepl("*PerfO*",item)){scale="PerfO_SS"}
+      
+      if(!any(is.na(ResponseTimes[,item]))){res <- c(summary(ResponseTimes[,item]),"NA's"=0)}
+      else{res <- summary(ResponseTimes[,item])}
+
+      c(
+        "Item"=gsub("HoPE_PRO_|HoPE_PerfO_","",item),
+        "n"=sum(!is.na(ResponseTimes[,item]),na.rm=TRUE),
+        round(res,2),
+        "Time-SS_Rho"=round(cor(ResponseTimes[,item],
+          ResponseTimes[,scale],method="pearson",use="pairwise.complete.obs"),2))
+    }))
+
+
+datatable(ItemTime,
+            extensions = 'Buttons',
+            options = list(
+              paging = TRUE,
+              dom = 'Bfrltip',
+              buttons = c('copy', 'csv', 'excel', 'pdf'),
+              pageLength = 2,
+              lengthMenu=c(3,5,10,25,50,100)))
+          
+
+```
+
+
+####  + Characteristics (Clin/Demo) by scales. 
+
+```{r DTF}
+#variables to work across:
+
+Charactertistics=c("Gender.x","Race","AgeBands","Ethnicity","Cogn.Impairment")
+
+
+#Scale
+DTF=do.call(rbind,lapply(c("PRO_SS","PerfO_SS"),function(scale){
+  do.call(rbind,sapply(Charactertistics, function(var){
+    out=t(sapply(unique(data[,var]), function(v){
+      if(!any(is.na(data[data[,var]==v,scale]))){res <- c(summary(data[data[,var]==v,scale]),"NA's"=0)}
+      else{res <- summary(data[data[,var]==v,scale])}
+      c(
+          "Scale"=scale,
+          "Characteristic"=var,
+          "Level"=v,
+          "n"=sum(data[,var]==v, na.rm = TRUE),
+          round(res,2),
+          "PRO-PerfO_Rho"=round(cor(data[data[,var]==v,"PRO_SS"],
+            data[data[,var]==v,"PerfO_SS"],method="pearson",use="pairwise.complete.obs"),2))}))
+      nums=matrix(as.numeric(out[,4:12]),ncol=9)
+    out=rbind(out,c(out[1,1:3],round(diff(rbind(apply(nums[nums[,1]>0,],2,min),apply(nums[nums[,1]>0,],2,max))),2)))
+    out[nrow(out),3]="MaxDifference"
+    out
+    }))}))
+
+
+datatable(DTF[order(DTF[,"Characteristic"]),],
+          class = 'cell-border stripe',
+          # container =  container,
+          rownames = F,
+          extensions = c('RowGroup','Buttons'),
+          options = list(searching=TRUE,
+                         lengthChange = FALSE,
+                         info = F,
+                         ordering=F,
+                         paging=T,
+                         dom = 'Bfrltip',
+                         buttons = c('copy', 'csv', 'excel', 'pdf'),
+                         rowGroup = list(dataSrc=c(1,0)),
+                         columnDefs = list(list(visible=FALSE, targets=c(0, 1)),
+                                           list(className = 'dt-body-left',
+                                                targets = seq(2)),
+                                           list(className = 'dt-body-right',
+                                                targets = seq(3:11))
+                                           ),
+                         pageLength = 20,
+                         lengthMenu=c(3,5,10,25,50,100)))
+
+```
+
+
+####  + Characteristics (Clin/Demo) by items.   
+
+```{r DIF}
+
+#Item
+DIF=do.call(rbind,lapply(c(HoPE_PRO,HoPE_PerfO), function(item){
+  do.call(rbind,lapply(Charactertistics, function(var){
+    if(grepl("*PRO*",item)){scale="PRO_SS"}
+    if(grepl("*PerfO*",item)){scale="PerfO_SS"}
+    out=t(sapply(unique(data[,var]), function(v){
+      
+      if(!any(is.na(data[data[,var]==v,item]))){res <- c(summary(data[data[,var]==v,item]),"NA's"=0)}
+      else{res <- summary(data[data[,var]==v,item])}
+      
+        c(          
+          "Item"=item,
+          "Characteristic"=var,
+          "Level"=v,
+          "n"=sum(data[,var]==v,na.rm=TRUE),
+          round(res,2),
+          "Item-SS_Rho"=round(cor(data[data[,var]==v,item],
+            data[data[,var]==v,scale],method="spearman",use="pairwise.complete.obs"),2))}))
+    
+          nums=matrix(as.numeric(out[,4:12]),ncol=9)
+    out=rbind(out,c(out[1,1:3],round(diff(rbind(apply(nums[nums[,1]>0,],2,min),apply(nums[nums[,1]>0,],2,max))),2)))
+    out[nrow(out),3]="MaxDifference"
+    out
+
+    }))}))
+
+
+datatable(DIF[order(DIF[,"Characteristic"]),],
+          class = 'cell-border stripe',
+          # container =  container,
+          rownames = F,
+          extensions = c('RowGroup', 'Buttons'),
+          options = list(searching=TRUE,
+                         lengthChange = FALSE,
+                         info = F,
+                         ordering=F,
+                         paging=T,
+                         dom = 'Bfrltip',
+                         buttons = c('copy', 'csv', 'excel', 'pdf'),
+                         rowGroup = list(dataSrc=c(1,0)),
+                         columnDefs = list(list(visible=FALSE, targets=c(0, 1)),
+                                           list(className = 'dt-body-left',
+                                                targets = seq(2)),
+                                           list(className = 'dt-body-right',
+                                                targets = seq(3:11))
+                                           ),
+                         pageLength = 20,
+                         lengthMenu=c(3,5,10,25,50,100)))
+
+
+```
+
+  
+### 3. Missing data by item and persons.   
+#### + PRO missing items.  
+```{r PROMissingData}
+
+PRO_Missing=apply(data[,HoPE_PRO], 2, function(x){sum(is.na(x))})
+names(PRO_Missing)=gsub("HoPE_PRO_","",HoPE_PRO)
+datatable(cbind("Item Number"=names(PRO_Missing),"Missing (N)"=PRO_Missing), rownames = FALSE,
+            options = list(
+              columnDefs = list(list(className = 'dt-center', targets = 0:1)),
+              pageLength = 2))
+
+```
+
+
+#### + PerfO missing items.  
+
+```{r PerfOMissingData}
+
+PerfO_Missing=apply(data[,HoPE_PerfO], 2, function(x){sum(is.na(x))})
+names(PerfO_Missing)=gsub("HoPE_PerfO_","",HoPE_PerfO)
+datatable(cbind("Item"=names(PerfO_Missing),"Missing (N)"=PerfO_Missing), rownames = FALSE,
+            options = list(
+              columnDefs = list(list(className = 'dt-center', targets = 0:1)),
+              pageLength = 2))
+```
+
+### 4. Track over time. 
+  
+  
+  
+### 5. Linking Items. 
+```{r LinkingItems}
+
+```
 
 
 

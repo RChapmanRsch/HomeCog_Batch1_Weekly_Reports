@@ -1,0 +1,262 @@
+---
+title: "HomeCog Batch1 Weekly Slides"
+author: "Robert Chapman"
+format: revealjs
+editor: visual
+---
+
+## Purpose of Presentation
+
+Update the team on the status of HoPE HomeCog Batch 1 data collection.
+
+<p>
+
+**Specifically the Performance Items**
+
+```{r}
+
+#install.packages("data.table")
+library(data.table)
+#install.packages("DT")
+library(DT)
+
+
+library(knitr)
+
+setwd( "/Users/chapm564/Documents/GitHub/HomeCog_Batch1_Weekly_Reports")
+
+load("Env.RData")
+
+
+```
+
+## Content
+
+Content included in this presentation:
+
+-   Descriptives & Recruitment Targets
+-   Item Frequency Response
+-   Item Means & Item-total/Bivariate Correlations
+-   Scale Scores
+-   Time to complete assessment
+-   Differential Functioning (Item & Scale)
+-   Missing data
+
+## Batch 1 PerfO Items
+
+Memory
+
+<p>
+
+Naming
+
+<p>
+
+Semantic Association
+
+<p>
+
+Comprehension
+
+<p>
+
+Vigilance
+
+<p>
+
+Abstraction
+
+<p>
+
+Sequencing
+
+<p>
+
+Arithmetic
+
+<p>
+
+Clock
+
+<p>
+
+VisuoPerception
+
+<p>
+
+VisuoSpatial
+
+<p>
+
+## Descriptives & Recruitment Targets
+
+::: columns
+::: {.column width="40%"}
+::: {style="font-size: 65%;"}
+```{r, results='asis'}
+knitr::kable(t(as.matrix(table(data$Gender, useNA = "always"))),caption = "<b><u>Gender</u></b>")
+```
+
+------------------------------------------------------------------------
+
+```{r, results='asis'}
+knitr::kable(t(as.matrix(table(data$AgeBands, useNA = "always"))),caption = "<b><u>Age Bands</u></b>")
+```
+:::
+:::
+
+::: {.column width="60%"}
+::: {style="font-size: 65%;"}
+```{r, results='asis'}
+knitr::kable(as.matrix(table(data$Race.x, useNA = "always")), caption= "<b><u>Race<b><u>")
+```
+
+------------------------------------------------------------------------
+
+```{r, results='asis'}
+knitr::kable(as.matrix(table(data$Ethnicity.x, useNA = "always")),caption = "<b><u>Ethnicity</b></u>")
+```
+:::
+:::
+:::
+
+## PerfO Item Means
+
+```{r}
+h=hist(PerfO_means, plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="Performance Item\nItem Means", xlab="Item Mean (0-1)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+```
+
+## PerfO Item-Total Correlations
+
+```{r}
+h=hist(PerfO_ItemTotalCorr, plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="Performance Item\nItem-Total Correlation", xlab="r (pearson)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+```
+
+## Bivariate Item-Item Correlations
+
+```{r}
+h=hist(PerfOCorrTable[lower.tri(PerfOCorrTable)], plot=FALSE)
+plot(h, ylim=c(0,max(h$counts)*1.25), main="Performance Item\nBivariate Correlation Distribution", xlab="r (pearson)")
+text(h$mids, h$counts+(max(h$counts)/10), h$counts)
+```
+
+## PerfO Scale Scores
+
+```{r}
+boxplot(data$PerfO_SS, main="PerfO Sum Score Boxplot", ylab="Sum Score", ylim=c(0,length(HoPE_PerfO)))
+abline(h=length(HoPE_PerfO)*1, lty=2, col="green")
+abline(h=length(HoPE_PerfO)*0, lty=2, col="red")
+legend(0.5,10, legend=c("Best Health (Ceiling)","Worst Health (Floor)"), lty=c(2,2), col=c("green","red") )
+```
+
+## Time to complete assessment
+
+```{r}
+boxplot(X~Group,
+  data.frame(
+      X=c(data$Time.Used..s./60,
+        apply(ResponseTimes[,HoPE_PerfO],1,sum, na.rm=TRUE)/60,
+        apply(ResponseTimes[,HoPE_PRO],1,sum, na.rm=TRUE)/60),
+          Group=rep(c("Batch1","PerfO_only","PRO_only"),times=c(nrow(data),nrow(ResponseTimes),nrow(ResponseTimes)))),
+  ylab="time elapsed, minutes",
+  main="Testing Time")
+```
+
+## Time distribution per items.
+
+::: {style="font-size: 50%;"}
+```{r}
+datatable(ItemTime,
+            extensions = 'Buttons',
+            options = list(
+              paging = TRUE,
+              dom = 'Bfrltip',
+              buttons = c('copy', 'csv', 'excel', 'pdf'),
+              pageLength = 7,
+              lengthMenu=c(3,5,10,25,50,100)))
+```
+:::
+
+## Differential Functioning - Scale
+
+::: {style="font-size: 40%;"}
+```{r}
+datatable(DTF[order(DTF[,"Characteristic"]),],
+          class = 'cell-border stripe',
+          # container =  container,
+          rownames = F,
+          extensions = c('RowGroup','Buttons'),
+          options = list(searching=TRUE,
+                         lengthChange = FALSE,
+                         info = F,
+                         ordering=F,
+                         paging=T,
+                         dom = 'Bfrltip',
+                         buttons = c('copy', 'csv', 'excel', 'pdf'),
+                         rowGroup = list(dataSrc=c(1,0)),
+                         columnDefs = list(list(visible=FALSE, targets=c(0, 1)),
+                                           list(className = 'dt-body-left',
+                                                targets = seq(2)),
+                                           list(className = 'dt-body-right',
+                                                targets = seq(3:11))
+                                           ),
+                         pageLength = 7,
+                         lengthMenu=c(3,5,10,25,50,100)))
+```
+:::
+
+## Differential Functioning - Item
+
+::: {style="font-size: 40%;"}
+```{r}
+datatable(DIF[order(DIF[,"Characteristic"]),],
+          class = 'cell-border stripe',
+          # container =  container,
+          rownames = F,
+          extensions = c('RowGroup', 'Buttons'),
+          options = list(searching=TRUE,
+                         lengthChange = FALSE,
+                         info = F,
+                         ordering=F,
+                         paging=T,
+                         dom = 'Bfrltip',
+                         buttons = c('copy', 'csv', 'excel', 'pdf'),
+                         rowGroup = list(dataSrc=c(1,0)),
+                         columnDefs = list(list(visible=FALSE, targets=c(0, 1)),
+                                           list(className = 'dt-body-left',
+                                                targets = seq(2)),
+                                           list(className = 'dt-body-right',
+                                                targets = seq(3:11))
+                                           ),
+                         pageLength = 7,
+                         lengthMenu=c(3,5,10,25,50,100)))
+```
+:::
+
+## PerfO Missing data
+
+```{r}
+b=barplot(PerfO_Missing_Persons, ylim=c(0,max(PerfO_Missing_Persons)*1.25), ylab="# of missing items", main="Number of Items Missing\nby Person")
+text(b, PerfO_Missing_Persons+max(PerfO_Missing_Persons)*0.1, PerfO_Missing_Persons)
+```
+
+## PerfO Missing data
+
+::: {style="font-size: 50%;"}
+```{r}
+datatable(cbind("Item"=names(PerfO_Missing_Items),"Missing (N)"=PerfO_Missing_Items), 
+            rownames = FALSE,
+            extensions = 'Buttons',
+            options = list(
+              paging = TRUE,
+              dom = 'Bfrltip',
+              buttons = c('copy', 'csv', 'excel', 'pdf'),
+              columnDefs = list(list(className = 'dt-center', targets = 0:1)),
+              pageLength = 7,
+              lengthMenu=c(3,5,10,25,50,100)))
+```
+:::

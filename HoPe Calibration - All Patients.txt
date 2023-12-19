@@ -1,0 +1,71 @@
+Coordinator	Consent Date/ Approach Result	# of attempts	Participant ID	FastTest ID	Department	Sex	Race	Ethnicity 	Age	Cogn Impairment	"HoPe/
+HoPe+PorCH"	Proctor Code	HomeCog Interrupted (# completed)?	FAMCAT Interrupted (# completed)?	Audio (Good/Bad)	Notes
+Eric 	11/28/23		2	EJU-703-660-688	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	83			TOAHFZ				
+Eric	11/14/23		3	GLV-903-792-574	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	92			OXGWBA	all	all	Good	Son in the room; assisted in reading the questions
+Eric	11/17/23		4	ZVI-764-350-522	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	76			ECPCCR	all	all	Patient opted out	No audio needed. Patient completed with ease.
+Madison	11/16/23		5	ATE-783-703-505	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	84			JZVRZF	all	all	Good	
+Madison	11/14/23		6	ZBN-893-631-995	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	71			QZMFTW	all	all	Patient opted out	Asked a few claifiing questions with the number pattern questions; assistance with HomeCog to FamCat
+Eric	12/4/23	1	7	IYQ-252-058-869	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	51			AELMSC	all	all	None	
+Eric 	11/27/23		8	AQO-621-966-482	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	73			EQEJWW	all	No FAMCAT per patient request 		
+Eric 	11/22/23		9	TBG-054-851-277	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	79	Cognitive Impairment		DWETDA	Skipped some math questions 	FAMCAT not completed 		
+Eric	11/21/23		10	AWL-014-652-315	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	22			PCCMKT				
+Eric 	11/22/23		12	TKA-009-056-819	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	73			RZNJKT	all			
+Eric 	11/24/23		13	QIK-914-971-808	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	71			JWVIQE	all			
+Eric	12/1/23	1	14	LFY-949-750-733	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	79			YZNSDF	all	all	No	
+Eric	12/1/23	1	16	YFW-529-046-279	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	86			IZFIRS	all	all	No	
+Madison	11/28/23		18	IES-459-636-156	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	54			XRTDJI				
+Madison	11/28/23		19	RCO-098-747-453	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	35			GAZUFK	all		Pateint opted out	Pateint required clarification on how she should be answering questions
+Eric	12/5/23	1	22	ICZ-107-294-520	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	89			RUASXC	all	all	No Audio 	
+Eric	11/29/23		23	YMA-336-593-066	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	85			MXXULF	all	none		Patient did not want to continue due to their schedule
+Eric	12/4/23	1	24	VCA-543-320-146	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	76			MJBDUF	all	FAMCAT Interrupted due to RN discharge (non completed)	None	
+Eric	11/20/23		25	PNK-726-366-250	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	59			RRRIID	all	all		
+Eric 	11/29/23		26	TMR-081-309-959	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	76			NOXLPT				
+Eric	11/15/23		28	RKM-916-791-799	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	71			FADKGN	yes; completed 32	n/a	good	"Just saw PT before we entered. woke up more are test continued, got irriated with amount of questions, terminated HomeCog after 32 questions"
+Eric	11/16/23		29	ZMU-433-699-600	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	35		yes	TAIUVL	all	all	Good	"Pateint turned off audio; Husband chatted with coordinators, pateint was not distracted; pt flew through questions"
+Eric	12/7/23	2	31	QMZ-771-922-287	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	78	Cognitive Impairment		GQEYHH	36	0	No audio	Screen too blurry for patient. Coordinator asked first 36 questions
+Eric 	12/13/23	1	32	DBQ-527-736-472	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	 86-year old	Cognitive Impairment		GOVTWO	36	0	No audio 	"Impaired eyesight, unable to view screen"
+Eric	11/30/23	1	33	BKZ-763-615-825	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	66	Cognitive Impairment		XYZION	15	0	No aduio	Severe Alz. Patient unable to continue past 15 questions. In room for 1.5 hours 
+Eric 	11/28/23		36	CRW-103-547-417	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	86			QMDACH	all	all		Coordinator assistance required holding ipad due to broken arm.
+Eric	11/30/23	1	39	ECO-622-460-859	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	63			EIMWUE	all	all	No audio 	
+Eric	12/4/23	1	40	HDY-747-305-865	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	70			BYGIMR	all	all	None	
+Eric	12/4/23	1	41	XUE-692-457-616	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	81			QTLJCD	all	all	None	Completed FAMCAT behind the Firewall
+Eric	11/16/23		42	WMQ-718-704-787	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	90			FQRFYX	all	all	Good	Coordinator assistance required at times with answer choices.
+Madison	11/17/23		45	QRN-657-582-747	Rst Rodo 03 D	F	White	Not Hispanic or Latino [1]	39			UQGABO			Good	
+Eric 	12/11/23	1	47	CBU-218-600-873	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	66			UEIPPZ	all	10		RN interrupted 
+Eric 	11/27/23		49	QFM-947-623-359	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	85			NELSBW	all	all		Coordinator assistance required at times with answer choices.
+Eric	12/11/23	2	50	DJI-140-750-350	Rst Roei 04 4	F	White	Not Hispanic or Latino [1]	63			XKFEEX	all	none	no audio	PT waiting; no FAMCAT 
+Eric	12/6/23	1	53	SOP-486-714-972	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	76			PWJGVA	all	all	No Audio	
+Madison	12/5/23	1	54	SQI-346-904-192	Rst Roei 10 2	F	White	Not Hispanic or Latino [1]	64			ZIZFPU	all	all		cooridnator admin
+Eric 	12/7/23	1	55	NNJ-928-665-320	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	91			KKMWZS	all	all	No audio	
+Madison	12/1/23	1	56	CUP-549-637-661	Rst Rofr 02 C	F	American Indian/Alaskan Native	Not Hispanic or Latino [1]	69			QZDVND				
+Eric	11/20/23		57	KGJ-046-239-927	Rst Rodo 06 D	M	White	Not Hispanic or Latino [1]	78	Cognitive Impairment		CHLDSP				Coordinator read questions to patient per request 
+Madison	consented; return to admin HomeCog	3	59	MIH-090-764-944	Rst Rodo 04 D	M	Unable to Provide	Unknown [3]	61			OPRTPI				
+Eric 	11/24/23		61	PRL-896-936-660	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	71			OKGQMS				
+Madison	11/30/23	1	64	ZGW-797-576-559	Rst Rodo 06 D	M	White	Not Hispanic or Latino [1]	70			OLSQGB				
+Madison	11/15/23		66	HIH-478-143-153	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	63			YCMLQX	all	15	Good	"Asked for clarification on questions about needing to have questions repeated (HOH), Patient asked claification on movement (paralysised), missed the list of words that flashed on the screen, had to guess on those questions"
+Eric 	11/27/23		67	AIS-584-729-871	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	74			KBUGWK				Coordinator physical assistance required at times with answer choices.
+Eric	12/6/23	2	69	QCZ-505-741-226	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	65	Cognitive Impairment		WDLTXX	all	all	No audio	
+Eric	12/4/23	1	71	CDQ-419-382-152	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	53			IGQFDX	all	all	None	
+Eric	11/21/23		72	EFY-032-048-311	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	39		yes	DJRORW				
+Madison	11/21/23		73	VMT-295-338-033	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	72			NDZEXI				
+Eric	12/1/23	1	76	APY-371-678-591	Rst Roei 04 4	F	White	Not Hispanic or Latino [1]	70			SSPJKN	all	all	No Audio	
+Eric	12/5/23	1	78	LRR-433-844-566	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	63			AGMMWQ	all	Stopped at 25	No Audio	
+Eric 	11/29/23		79	EXJ-979-049-612	Rst Rodo 06 D	M	White	Hispanic or Latino [8]	77			PULLYL	36	none		Patient has low vision and unable to do the interactive performance questions.
+Eric 	11/29/23		80	TAN-525-708-521	Rst Rofr 02 C	M	White	Not Hispanic or Latino [1]	35			SEPJOH	all	all		
+Eric	12/6/23	2	81	VJH-891-500-465	Rst Rodo 04 D	M	White	Central American [10]	83			DXVKIV				
+Eric 	12/13/23	2	82	XSS-663-397-009	Rst Roei 04 4	M	White	Not Hispanic or Latino [1]	 81-year old			JUPACP	all	15	No audio 	
+Eric 	11/24/23		84	SIW-344-292-363	Rst Rodo 06 D	M	White	Not Hispanic or Latino [1]	38			PWOCQO				
+Eric	12/7/23	3	86	LQC-927-240-371	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	93			VBKJJB	Stopped around 15 questions		No audio	Service interrputed twice 
+Madison	12/13/23	1	87	HGB-035-821-986	Rst Rodo 03 D	M	Other	Not Hispanic or Latino [1]	 46-year old			FJKKLP				
+Eric 	12/12/23	1	89	RRK-861-370-828	Rst Rodo 04 D	F	White	Not Hispanic or Latino [1]	 86-year old		yes	YEYRQN			No audio	FAMCAT behind firewall
+Eric	12/5/23	1	95	RQA-845-874-839	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	80		yes	ODZJFE	all	all	No Audio	FAMCAT completed behind firewall
+Eric	11/30/23	1	97	IXJ-495-638-021	Rst Rojo 03 A	M	Choose Not to Disclose	Choose Not to Disclose [4]	63	Cognitive Impairment		OQIFPN	all	all	No audio 	Coordinator asked/held ipad
+Eric 	12/13/23	1	107	UBR-989-910-440	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	 71-year old			AAVCJB	all	15	No audio	"Long anecdotes, had to stop at 15"
+Eric 	12/14/23	1	111	KML-328-032-975	Rst Rojo 03 A	F	White	Not Hispanic or Latino [1]	 78-year old			UHJOYD	all	all	No audio	
+Eric	12/5/23	1	112	IVS-949-916-715	Rst Rojo 03 A	M	White	Not Hispanic or Latino [1]	52		yes	EMWBXO	all	all	No Audio	FAMCAT Behind Firewall
+Madison	12/5/23	1	114	IFS-042-124-210	Rst Roei 10 2	M	White	Not Hispanic or Latino [1]	70			QCYRKV	16; pt discharging to home	n/a		pt used audio
+Eric	12/6/23	1	116	ABC-438-028-368	Rst Rodo 03 D	M	White	Not Hispanic or Latino [1]	85	Cognitive Impairment	yes	BGEQZH	all	all	No audio	FAMCAT behind firewall
+MAdison	12/8/23	1	119	NYS-954-156-833	Rst Rodo 04 D	M	White	Not Hispanic or Latino [1]	71			MXYTRA				
+Eric 	12/13/23	1	124	KPW-314-622-077	Rst Roei 04 3	M	White	Not Hispanic or Latino [1]	 78-year old			NUAZYZ	all	0	No audio 	RN came to assess patient at end of Homecog
+Eric	12/14/23	1	130	SYM-854-891-958	Rst Rofr 02 C	M	White	Not Hispanic or Latino [1]	 77-year old	Cognitive Impairment		JKRDNN				
+Eric	12/14/23	1	148	KNM-470-060-712	Rst Rofr 02 C	F	White	Not Hispanic or Latino [1]	 47-year old			QYBZIP				
